@@ -7,7 +7,7 @@
 # *************************************
 
 from database.database_connection import database
-from werkzeug.security import generate_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
 import utilities.constants as constants
 import re
 
@@ -53,17 +53,17 @@ def username_exists(username: str) -> bool:
 
     users_collection = database[constants.DB_USERS_COLLECTION]
 
-    return users_collection.find_one( { 'username': username } )
+    return users_collection.find_one( { 'username': username } ) != None
 
 def email_exists(email: str) -> bool:
 
     users_collection = database[constants.DB_USERS_COLLECTION]
 
-    return users_collection.find_one( { 'email': email } )
+    return users_collection.find_one( { 'email': email } ) != None
 
 def register_user(username: str, email: str, password: str):
 
-    hashed_password = generate_password_hash(password)
+    hashed_password = generate_password_hash(password=password)
 
     user = {
         "username": username,
@@ -75,3 +75,13 @@ def register_user(username: str, email: str, password: str):
     users_collection.insert_one(user)
 
     return user
+
+def login_password_matches(email: str, password: str) -> bool:
+
+    users_collection = database[constants.DB_USERS_COLLECTION]
+
+    user_data = users_collection.find_one( { 'email': email } ) 
+
+    hashed_password = user_data[constants.PASSWORD]
+
+    return check_password_hash(pwhash=hashed_password, password=password)
