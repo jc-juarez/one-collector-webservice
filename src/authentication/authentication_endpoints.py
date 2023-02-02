@@ -123,14 +123,4 @@ def login_user():
         return {
             'error-message': 'login-error'
         }, constants.HTTP_INTERNAL_ERROR_CODE
-
-# Auth Test Endpoint
-@app.post("/backend-api/auth")
-@auth.login_required
-def test_auth():
-
-    user = auth.get_user_by_user_id(session.get(constants.USER_ID))
-
-    print(user)
-
-    return "Auth :)", 200
+        

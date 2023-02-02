@@ -26,6 +26,7 @@ app.config['SESSION_USE_SIGNER'] = True
 server_session = Session(app)
 
 import authentication.authentication_endpoints
+import item_collections.collections_endpoints
 
 if __name__ == '__main__':
     app.run(host=constants.SERVER_IP, port=constants.SERVER_PORT, debug=True)

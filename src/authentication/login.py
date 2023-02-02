@@ -17,3 +17,4 @@ def password_matches(email: str, password: str) -> bool:
     hashed_password = user[constants.PASSWORD]
 
     return check_password_hash(pwhash=hashed_password, password=password)
+    

@@ -63,3 +63,4 @@ def register_user(username: str, email: str, password: str):
 
     users_collection = database[constants.DB_USERS_COLLECTION]
     users_collection.insert_one(user)
+    
