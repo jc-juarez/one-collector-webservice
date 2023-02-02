@@ -6,9 +6,11 @@
 # Contact: speedcollect@outlook.com
 # *************************************
 
+from flask import session
 from database.database_connection import database
 from werkzeug.security import generate_password_hash, check_password_hash
 import utilities.constants as constants
+import uuid
 import re
 
 def valid_username(username) -> bool:
@@ -61,11 +63,18 @@ def email_exists(email: str) -> bool:
 
     return users_collection.find_one( { 'email': email } ) != None
 
+def get_user_by_email(email: str):
+
+    users_collection = database[constants.DB_USERS_COLLECTION]
+
+    return users_collection.find_one( { 'email': email } )
+
 def register_user(username: str, email: str, password: str):
 
     hashed_password = generate_password_hash(password=password)
 
     user = {
+        "user_id": str(uuid.uuid4()),
         "username": username,
         "email": email,
         "password": hashed_password
@@ -74,14 +83,17 @@ def register_user(username: str, email: str, password: str):
     users_collection = database[constants.DB_USERS_COLLECTION]
     users_collection.insert_one(user)
 
-    return user
-
 def login_password_matches(email: str, password: str) -> bool:
 
-    users_collection = database[constants.DB_USERS_COLLECTION]
+    user = get_user_by_email(email) 
 
-    user_data = users_collection.find_one( { 'email': email } ) 
-
-    hashed_password = user_data[constants.PASSWORD]
+    hashed_password = user[constants.PASSWORD]
 
     return check_password_hash(pwhash=hashed_password, password=password)
+
+def authorized() -> bool:
+
+    if(not session.get(constants.USER_ID)): return False
+
+    return True
+

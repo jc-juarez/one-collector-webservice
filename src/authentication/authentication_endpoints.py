@@ -8,7 +8,7 @@
 
 from __main__ import app
 from bson.json_util import dumps
-from flask import request
+from flask import request, session
 import utilities.constants as constants
 import authentication.login as login
 
@@ -61,7 +61,17 @@ def register_user():
                 'error-message': 'email-exists'
             }, constants.HTTP_CONFLICT_CODE
 
-        return dumps(login.register_user(username, email, password)), constants.HTTP_OK_CODE
+        login.register_user(username, email, password)
+
+        user = login.get_user_by_email(email)
+
+        session[constants.USER_ID] = user[constants.USER_ID]
+
+        user.pop(constants.OBJECT_ID)
+        user.pop(constants.USER_ID)
+        user.pop(constants.PASSWORD)
+
+        return dumps(user), constants.HTTP_OK_CODE
 
     except:
 
@@ -96,12 +106,26 @@ def login_user():
                 'error-message': 'email-or-password-incorrect'
             }, constants.HTTP_UNAUTHORIZED_CODE
 
-        return {
-                'email': email
-            }, constants.HTTP_OK_CODE
+        user = login.get_user_by_email(email)
+
+        session[constants.USER_ID] = user[constants.USER_ID]
+
+        user.pop(constants.OBJECT_ID)
+        user.pop(constants.USER_ID)
+        user.pop(constants.PASSWORD)
+
+        return dumps(user), constants.HTTP_OK_CODE
 
     except:
 
         return {
-            'error-message': 'register-error'
+            'error-message': 'login-error'
         }, constants.HTTP_INTERNAL_ERROR_CODE
+
+# Auth Test Endpoint
+@app.post("/backend-api/auth")
+def test_auth():
+
+    if(not login.authorized()): return 'Not auth', 401
+
+    return "Auth!", 200

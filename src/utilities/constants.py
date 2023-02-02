@@ -21,11 +21,14 @@ SERVER_IP = '0.0.0.0'
 SERVER_PORT = 5000
 
 # Strings
+DB_SESSIONS_COLLECTION = 'Sessions'
 DB_USERS_COLLECTION = 'Users'
 CONTENT_TYPE = 'Content-Type'
+USER_ID = 'user_id'
 USERNAME = 'username'
 EMAIL = 'email'
 PASSWORD = 'password'
+OBJECT_ID = '_id'
 
 # Literals
 MIN_USERNAME_SIZE = 4
