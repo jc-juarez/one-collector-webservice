@@ -1,0 +1,13 @@
+# *************************************
+# SpeedCollect
+# Web Service
+# '.gitignore'
+# Author: Juan Carlos Juárez
+# Contact: speedcollect@outlook.com
+# *************************************
+
+# Exclude .env file
+.env
+
+# Exclude Virtual Environment directory
+venv/
