@@ -20,7 +20,7 @@ app.config['SESSION_TYPE'] = 'mongodb'
 app.config['SESSION_MONGODB'] = database_client
 app.config['SESSION_MONGODB_DB'] = str(os.getenv('DBNAME'))
 app.config['SESSION_MONGODB_COLLECT'] = constants.DB_SESSIONS_COLLECTION
-app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=1)
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=constants.SESSION_LIFETIME_DAYS)
 app.config['SESSION_USE_SIGNER'] = True
 
 server_session = Session(app)
